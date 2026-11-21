@@ -98,18 +98,22 @@ img { display: block; max-width: 100%; }
   }
 
   #videos:target:not(:focus-within) {
-    .section-heading,
-    .brutal-section-heading {
+    .section-heading {
       animation: entrance-rise 380ms cubic-bezier(.2, .75, .25, 1) backwards;
     }
 
-    .video-grid,
-    .brutal-video-feature,
-    .brutal-video-list {
+    .video-grid {
       animation: entrance-rise 450ms cubic-bezier(.2, .75, .25, 1) 75ms backwards;
     }
 
-    .brutal-video-list { animation-delay: 135ms; }
+    .brutal-section-heading {
+      animation: video-heading-fade 300ms ease-out;
+    }
+  }
+
+  @keyframes video-heading-fade {
+    from { opacity: .65; }
+    to { opacity: 1; }
   }
 
   @keyframes entrance-rise {
