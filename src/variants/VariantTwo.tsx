@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { CoachPhoto } from '../components/CoachPhoto'
 import { articles, videos, heroDescription, coachIntro, trainingApproach, trainingLevels } from '../content'
 import { socials, youtubeVideoUrl } from '../socials'
-import { VideoCard } from '../VideoCard'
+import { VideoThumbnail } from '../VideoCard'
 
 const blogArticles = [
   ...articles,
@@ -178,6 +178,41 @@ function BlogRail() {
   )
 }
 
+function VideoList() {
+  const [selectedId, setSelectedId] = useState<string>(videos.kneeShield.id)
+
+  return (
+    <ol className="brutal-video-list">
+      {Object.values(videos).map(video => {
+        const selected = selectedId === video.id
+        const panelId = `video-panel-${video.id}`
+
+        return (
+          <li className="brutal-video-item" key={video.id} data-selected={selected}>
+            <button
+              className="brutal-video-selector"
+              type="button"
+              aria-expanded={selected}
+              aria-controls={panelId}
+              onClick={() => setSelectedId(video.id)}
+            >
+              <span className="brutal-video-preview" aria-hidden="true"><VideoThumbnail id={video.id} /></span>
+              <span className="brutal-video-title">{video.title}</span>
+            </button>
+            <div className="brutal-video-panel" id={panelId} inert={!selected}>
+              <div className="brutal-video-panel-inner">
+                <a className="brutal-video-watch" href={youtubeVideoUrl(video.id)} aria-label={`Смотреть на YouTube: ${video.title}`}>
+                  <VideoThumbnail id={video.id} />
+                </a>
+              </div>
+            </div>
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
+
 export function VariantTwo() {
   return (
     <>
@@ -226,14 +261,7 @@ export function VariantTwo() {
             </div>
             <a className="text-link" href={socials.youtube}>Все видео на YouTube ↗</a>
           </div>
-          <div className="brutal-video-grid">
-            <div className="brutal-video-feature"><VideoCard video={videos.kneeShield} /></div>
-            <div className="brutal-video-list">
-              {Object.values(videos).filter(video => video.id !== videos.kneeShield.id).map(video => (
-                <VideoCard key={video.id} video={video} />
-              ))}
-            </div>
-          </div>
+          <VideoList />
         </div>
       </section>
 
