@@ -5,6 +5,7 @@ const navigation = [
   ['about', 'О тренере'],
   ['videos', 'Видео'],
   ['blog', 'Блог'],
+  ['schedule', 'Расписание'],
   ['contact', 'Контакты'],
 ]
 

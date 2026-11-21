@@ -47,3 +47,16 @@ img { display: block; max-width: 100%; }
 }
 .variant-switcher button:hover { background: #383432; }
 .variant-switcher button[aria-pressed="true"] { background: #e8e5df; color: #101010; }
+
+.training-schedule { margin-block: 1.5rem; }
+.training-schedule > p { margin-top: .4rem; }
+.training-schedule dl { margin-block: .75rem 0; }
+.training-schedule dl > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .15rem .8rem;
+  padding-block: .55rem;
+  border-top: 1px solid var(--line, var(--rule));
+}
+.training-schedule dt { font-weight: 700; font-variant-numeric: tabular-nums; }
+.training-schedule dd { margin: 0; }

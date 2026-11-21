@@ -302,3 +302,9 @@
   :where(.variant-two) .video-caption,
   :where(.variant-two) nav a { transition: color 150ms ease, background-color 150ms ease; }
 }
+
+:where(.variant-two) .training-schedule h3 {
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  text-transform: uppercase;
+}
+:where(.variant-two) .training-schedule dt { color: var(--focus); }
