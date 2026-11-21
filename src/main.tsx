@@ -4,6 +4,8 @@ import '@fontsource/oswald/latin-600.css'
 import '@fontsource/oswald/cyrillic-600.css'
 import { App } from './App'
 import './styles.css'
+import './variants/variant-one.css'
+import './variants/variant-two.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode><App /></StrictMode>,

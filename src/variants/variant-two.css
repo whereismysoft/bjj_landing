@@ -1,0 +1,304 @@
+.variant-two {
+  --charcoal: #101010;
+  --graphite: #1c1c1c;
+  --red: #d62828;
+  --paper: #e8e5df;
+  --muted: #bfbab3;
+  --focus: #ff7470;
+  --rule: #3f3d3a;
+  --gutter: clamp(1rem, 4vw, 4.5rem);
+  background: var(--charcoal);
+  color: var(--paper);
+}
+
+:where(.variant-two) .wrap {
+  width: min(100% - 2 * var(--gutter), 88rem);
+  margin-inline: auto;
+}
+:where(.variant-two) h1,
+:where(.variant-two) h2,
+:where(.variant-two) h3,
+:where(.variant-two) .brand {
+  font-family: var(--display);
+  line-height: 1;
+  font-weight: 600;
+}
+:where(.variant-two) h2 {
+  font-size: clamp(3rem, 8.1vw, 8rem);
+  letter-spacing: -.035em;
+  text-transform: uppercase;
+}
+:where(.variant-two) .section-index {
+  margin-bottom: .9rem;
+  color: #ff7470;
+  font: 700 .75rem/1.35 system-ui, sans-serif;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+:where(.variant-two) .muted { color: var(--muted); }
+:where(.variant-two) .text-link { text-underline-offset: .3em; }
+:where(.variant-two) .text-link:hover { color: #ff7470; }
+
+:where(.variant-two) .site-header { border-bottom: 1px solid var(--rule); }
+:where(.variant-two) .header-inner,
+:where(.variant-two) .footer-inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: .6rem 1.25rem;
+  min-height: 4.5rem;
+  padding-block: .85rem;
+}
+:where(.variant-two) .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .4em;
+  color: var(--paper);
+  font-size: clamp(1.65rem, 2.5vw, 2.1rem);
+  text-decoration: none;
+  white-space: nowrap;
+}
+:where(.variant-two) .brand b { color: #ff7470; font-weight: inherit; }
+:where(.variant-two) .brand-mark {
+  width: .45rem;
+  height: 1.3rem;
+  background: var(--red);
+  transform: skew(-17deg);
+}
+:where(.variant-two) nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0 clamp(.65rem, 2vw, 1.9rem);
+}
+:where(.variant-two) nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  min-height: 44px;
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+:where(.variant-two) nav a:hover { color: #ff7470; }
+
+:where(.variant-two) .brutal-hero {
+  position: relative;
+  isolation: isolate;
+  border-bottom: .45rem solid var(--red);
+}
+:where(.variant-two) .brutal-portrait {
+  position: relative;
+  z-index: -1;
+  height: clamp(20rem, 100vw, 35rem);
+}
+:where(.variant-two) .brutal-portrait img,
+:where(.variant-two) .brutal-detail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+:where(.variant-two) .brutal-portrait img {
+  object-position: 50% 10%;
+  filter: saturate(.68) contrast(1.12) brightness(.85);
+}
+:where(.variant-two) .brutal-portrait::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, #101010, #10101000 63%);
+}
+:where(.variant-two) .brutal-portrait figcaption {
+  position: absolute;
+  top: 1rem;
+  right: var(--gutter);
+  z-index: 1;
+  padding: .45rem .35rem;
+  background: var(--charcoal);
+  writing-mode: vertical-rl;
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+:where(.variant-two) .brutal-hero-copy {
+  margin-top: -6.5rem;
+  padding-bottom: clamp(2.5rem, 6vw, 5.5rem);
+}
+:where(.variant-two) .brutal-hero h1 {
+  font-size: clamp(2.45rem, 10.5vw, 5.5rem);
+  line-height: .99;
+  letter-spacing: -.025em;
+  text-transform: uppercase;
+}
+:where(.variant-two) .brutal-hero h1 span { display: block; }
+:where(.variant-two) .outline-line {
+  color: var(--charcoal);
+  -webkit-text-stroke: 1.4px var(--paper);
+}
+:where(.variant-two) .brutal-hero-intro {
+  max-width: 35ch;
+  margin-block: 1.3rem 1.45rem;
+  color: var(--paper);
+}
+:where(.variant-two) .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem 1.25rem;
+  min-height: 48px;
+  border: 0;
+  padding: .75rem 1rem;
+  background: var(--red);
+  color: white;
+  font: 750 .85rem/1.35 system-ui, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+}
+:where(.variant-two) .button:hover { background: var(--paper); color: var(--charcoal); }
+
+:where(.variant-two) .brutal-about,
+:where(.variant-two) .brutal-blog {
+  background: var(--paper);
+  color: var(--charcoal);
+  --focus: #ad1818;
+}
+:where(.variant-two) .brutal-about,
+:where(.variant-two) .brutal-video-section,
+:where(.variant-two) .brutal-blog,
+:where(.variant-two) #contact { padding-block: clamp(3.5rem, 8vw, 8rem); }
+:where(.variant-two) .brutal-about .section-index,
+:where(.variant-two) .brutal-blog .section-index { color: #a81d1d; }
+:where(.variant-two) .brutal-about-grid,
+:where(.variant-two) .brutal-blog-grid {
+  display: grid;
+  gap: clamp(1.6rem, 5vw, 5rem);
+}
+:where(.variant-two) .brutal-detail {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--graphite);
+  border-left: .5rem solid var(--red);
+}
+:where(.variant-two) .brutal-detail img {
+  object-position: 50% 75%;
+  filter: grayscale(1) contrast(1.2);
+}
+:where(.variant-two) .brutal-about h2 { font-size: clamp(2.7rem, 6vw, 6rem); }
+:where(.variant-two) .brutal-about-copy p:not(.section-index) { max-width: 57ch; margin-top: .85rem; }
+:where(.variant-two) .brutal-lead { font-weight: 750; font-size: 1.13rem; }
+
+:where(.variant-two) .brutal-section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: clamp(1.5rem, 4vw, 3rem);
+}
+:where(.variant-two) .brutal-video-grid { display: grid; gap: clamp(1.2rem, 3vw, 3rem); }
+:where(.variant-two) .video-card {
+  display: grid;
+  align-items: center;
+  gap: .85rem;
+  text-decoration: none;
+}
+:where(.variant-two) .video-thumbnail {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--graphite);
+}
+:where(.variant-two) .video-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+:where(.variant-two) .video-thumbnail img[hidden] { display: none; }
+:where(.variant-two) .play-icon {
+  position: absolute;
+  inset: auto auto .4rem .4rem;
+  display: grid;
+  place-items: center;
+  width: 1.65rem;
+  aspect-ratio: 1;
+  background: var(--red);
+  color: white;
+}
+:where(.variant-two) .play-icon svg { width: 1rem; }
+:where(.variant-two) .video-caption { font-weight: 700; line-height: 1.35; }
+:where(.variant-two) .video-caption span { margin-left: .25em; color: #ff7470; }
+:where(.variant-two) .brutal-video-feature .video-card { padding-bottom: 1rem; border-bottom: 3px solid var(--red); }
+:where(.variant-two) .brutal-video-feature .play-icon { width: 3.25rem; inset: auto auto .75rem .75rem; }
+:where(.variant-two) .brutal-video-feature .play-icon svg { width: 1.5rem; }
+:where(.variant-two) .brutal-video-feature .video-caption {
+  font-family: var(--display);
+  font-size: clamp(1.45rem, 2.5vw, 2.5rem);
+}
+:where(.variant-two) .brutal-video-list .video-card {
+  grid-template-columns: minmax(5rem, 27%) 1fr;
+  min-height: 3.5rem;
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+:where(.variant-two) .video-card:hover .video-caption { color: #ff7470; }
+
+:where(.variant-two) .brutal-articles article {
+  padding-block: 1rem 1.35rem;
+  border-top: 1px solid #79756e;
+}
+:where(.variant-two) .brutal-articles .section-index { margin-bottom: .5rem; }
+:where(.variant-two) .brutal-articles h3 {
+  margin-bottom: .65rem;
+  font-size: clamp(1.5rem, 3.5vw, 3rem);
+  line-height: 1.12;
+}
+:where(.variant-two) .brutal-articles a { text-decoration-thickness: 1px; text-underline-offset: .16em; }
+:where(.variant-two) .brutal-articles a:hover { color: #a81d1d; }
+:where(.variant-two) .brutal-articles a span { color: #a81d1d; }
+
+:where(.variant-two) #contact { background: var(--graphite); border-top: .45rem solid var(--red); }
+:where(.variant-two) #contact .section-grid {
+  display: grid;
+  gap: clamp(1.8rem, 5vw, 5rem);
+}
+:where(.variant-two) .contact-intro { max-width: 34ch; margin-block: .8rem; }
+:where(.variant-two) .contact-form, :where(.variant-two) .draft { display: grid; gap: .85rem; }
+:where(.variant-two) .contact-form { min-width: 0; }
+:where(.variant-two) .contact-form label { display: block; margin-bottom: .35rem; font-weight: 700; }
+:where(.variant-two) .contact-form input,
+:where(.variant-two) .contact-form textarea {
+  display: block;
+  width: 100%;
+  border: 1px solid #77726a;
+  border-radius: 0;
+  padding: .85rem;
+  background: var(--charcoal);
+  color: var(--paper);
+  font: inherit;
+}
+:where(.variant-two) .contact-form textarea { resize: vertical; }
+:where(.variant-two) .contact-form ::placeholder { color: var(--muted); }
+:where(.variant-two) .contact-form .button { justify-self: start; }
+:where(.variant-two) .form-status:empty { margin-top: -.85rem; }
+:where(.variant-two) .site-footer { border-top: 1px solid var(--rule); }
+
+@media (min-width: 48rem) {
+  :where(.variant-two) .brutal-hero { display: grid; align-items: center; min-height: clamp(38rem, 63vw, 54rem); }
+  :where(.variant-two) .brutal-portrait { position: absolute; inset: 0 0 0 33%; height: auto; }
+  :where(.variant-two) .brutal-portrait img { object-position: center 8%; }
+  :where(.variant-two) .brutal-portrait::after {
+    background: linear-gradient(90deg, #101010, #10101055 20%, #10101000 55%),
+      linear-gradient(0deg, #10101091, #10101000 34%);
+  }
+  :where(.variant-two) .brutal-hero-copy { margin-top: 0; padding-block: clamp(3rem, 7vw, 7rem); }
+  :where(.variant-two) .brutal-hero h1 { font-size: clamp(4.3rem, 8.4vw, 9rem); }
+  :where(.variant-two) .brutal-about-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: center; }
+  :where(.variant-two) .brutal-video-grid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: start; }
+  :where(.variant-two) .brutal-blog-grid,
+  :where(.variant-two) #contact .section-grid { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where(.variant-two) .button,
+  :where(.variant-two) .video-caption,
+  :where(.variant-two) nav a { transition: color 150ms ease, background-color 150ms ease; }
+}
