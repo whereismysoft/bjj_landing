@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react'
 import { socials } from '../socials'
 import { VariantSwitcher, type VariantSwitcherProps } from './VariantSwitcher'
 
@@ -37,15 +38,47 @@ function YouTubeIcon() {
   )
 }
 
-export function SiteHeader(props: VariantSwitcherProps) {
+export function SiteHeader({ variant, onSelect }: VariantSwitcherProps) {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuButton = useRef<HTMLButtonElement>(null)
+
   return (
-    <header id="top" className="site-header">
+    <header
+      id="top"
+      className="site-header"
+      onKeyDown={event => {
+        if (event.key === 'Escape' && menuOpen && menuButton.current?.getClientRects().length) {
+          setMenuOpen(false)
+          menuButton.current.focus()
+        }
+      }}
+    >
       <div className="wrap header-inner">
         <Brand />
-        <nav aria-label="Основная навигация">
-          {navigation.map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
+        {variant === '2' && (
+          <button
+            ref={menuButton}
+            className="mobile-menu-toggle"
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls="primary-navigation"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d={menuOpen ? 'm4 4 10 10M14 4 4 14' : 'M2 4h14M2 9h14M2 14h14'} />
+            </svg>
+            Меню
+          </button>
+        )}
+        <nav id="primary-navigation" aria-label="Основная навигация" data-open={menuOpen}>
+          {navigation.map(([id, label]) => (
+            <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)}>{label}</a>
+          ))}
         </nav>
-        <VariantSwitcher {...props} />
+        <VariantSwitcher variant={variant} onSelect={next => {
+          if (next !== variant) setMenuOpen(false)
+          onSelect(next)
+        }} />
       </div>
     </header>
   )

@@ -308,3 +308,45 @@
   text-transform: uppercase;
 }
 :where(.variant-two) .training-schedule dt { color: var(--focus); }
+
+:where(.variant-two) .mobile-menu-toggle { display: none; }
+
+@media (max-width: 47.99rem) {
+  :where(.variant-two) .site-header {
+    position: relative;
+    z-index: 2;
+  }
+
+  :where(.variant-two) .mobile-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-height: 44px;
+    padding: .45rem .65rem;
+    margin-left: auto;
+    border: 1px solid var(--rule);
+    background: var(--graphite);
+    color: var(--paper);
+    font: 700 .78rem/1 system-ui, sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  :where(.variant-two) .mobile-menu-toggle[aria-expanded="true"] {
+    border-color: var(--red);
+  }
+
+  :where(.variant-two) #primary-navigation {
+    display: none;
+    position: absolute;
+    inset: 100% 0 auto;
+    padding-inline: var(--gutter);
+    background: var(--charcoal);
+    border-block: 1px solid var(--rule);
+  }
+
+  :where(.variant-two) #primary-navigation[data-open="true"] { display: grid; }
+
+  :where(.variant-two) #primary-navigation a { min-height: 48px; }
+  :where(.variant-two) #primary-navigation a + a { border-top: 1px solid var(--rule); }
+}
