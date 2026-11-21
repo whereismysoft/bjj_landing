@@ -325,7 +325,7 @@
   position: relative;
   display: flex;
   overflow-x: auto;
-  overscroll-behavior-inline: contain;
+  overscroll-behavior-x: none;
   padding-block: .35rem .6rem;
   --blog-gap: clamp(.75rem, 2vw, 1.5rem);
   --blog-card: clamp(19rem, 29vw, 22rem);
@@ -334,6 +334,7 @@
 :where(.variant-two) .brutal-articles {
   display: flex;
   flex: none;
+  width: max-content;
   gap: var(--blog-gap);
   padding-inline-end: var(--blog-gap);
 }
