@@ -26,7 +26,6 @@ export function App() {
       '.brutal-about-copy',
       '.brutal-section-heading',
       '.brutal-blog-grid > :first-child',
-      '.brutal-blog-rail',
       '#contact .section-grid > *',
     ].join(', '))
     const active = new Map<Element, Animation>()

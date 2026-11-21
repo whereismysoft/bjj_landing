@@ -37,25 +37,29 @@ function BlogRail() {
   useEffect(() => {
     const rail = railRef.current
     const copy = copyRef.current
-    if (!rail || !copy || typeof IntersectionObserver === 'undefined') return
+    const original = rail?.firstElementChild
+    if (!rail || !copy || !original || typeof IntersectionObserver === 'undefined') return
 
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
     const hover = window.matchMedia('(any-hover: hover)')
     let visible = false
     let hovered = hover.matches && rail.matches(':hover')
     let pointerDown = false
+    let touchActive = false
+    let manualScroll = false
+    let settleTimer: number | undefined
     let frame = 0
     let lastTime = 0
     let speed = 0
     let remainder = 0
 
     function schedule() {
-      if (!frame && visible && !paused && !motion.matches) frame = requestAnimationFrame(tick)
+      if (!frame && visible && !paused && !motion.matches && !manualScroll) frame = requestAnimationFrame(tick)
     }
 
     function tick(time: number) {
       frame = 0
-      if (!rail || !copy) return
+      if (!rail || !copy || !original) return
 
       const elapsed = lastTime ? Math.min((time - lastTime) / 1000, .05) : 0
       lastTime = time
@@ -66,7 +70,7 @@ function BlogRail() {
       remainder += speed * elapsed
       const step = Math.floor(remainder)
       if (step) {
-        const loopWidth = copy.offsetLeft
+        const loopWidth = copy.getBoundingClientRect().left - original.getBoundingClientRect().left
         if (loopWidth > 0) rail.scrollLeft = (Math.max(0, rail.scrollLeft) + step) % loopWidth
         remainder -= step
       }
@@ -105,6 +109,27 @@ function BlogRail() {
       schedule()
     }
 
+    function settleSwipe() {
+      window.clearTimeout(settleTimer)
+      if (!manualScroll || touchActive) return
+      settleTimer = window.setTimeout(() => {
+        manualScroll = false
+        schedule()
+      }, 180)
+    }
+
+    function startSwipe() {
+      touchActive = true
+      manualScroll = true
+      window.clearTimeout(settleTimer)
+      stop()
+    }
+
+    function endSwipe() {
+      touchActive = false
+      settleSwipe()
+    }
+
     function syncMotion() {
       if (!rail) return
       rail.toggleAttribute('data-loop', !motion.matches)
@@ -124,6 +149,10 @@ function BlogRail() {
     rail.addEventListener('pointerenter', enter)
     rail.addEventListener('pointerleave', leave)
     rail.addEventListener('pointerdown', press)
+    rail.addEventListener('touchstart', startSwipe, { passive: true })
+    rail.addEventListener('touchend', endSwipe, { passive: true })
+    rail.addEventListener('touchcancel', endSwipe, { passive: true })
+    rail.addEventListener('scroll', settleSwipe, { passive: true })
     rail.addEventListener('focusin', stop)
     rail.addEventListener('focusout', schedule)
     window.addEventListener('pointerup', release)
@@ -136,6 +165,11 @@ function BlogRail() {
       rail.removeEventListener('pointerenter', enter)
       rail.removeEventListener('pointerleave', leave)
       rail.removeEventListener('pointerdown', press)
+      window.clearTimeout(settleTimer)
+      rail.removeEventListener('touchstart', startSwipe)
+      rail.removeEventListener('touchend', endSwipe)
+      rail.removeEventListener('touchcancel', endSwipe)
+      rail.removeEventListener('scroll', settleSwipe)
       rail.removeEventListener('focusin', stop)
       rail.removeEventListener('focusout', schedule)
       window.removeEventListener('pointerup', release)
