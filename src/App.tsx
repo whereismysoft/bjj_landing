@@ -30,30 +30,32 @@ export function App() {
       '#contact .section-grid > *',
     ].join(', '))
     const active = new Map<Element, Animation>()
+    const revealed = new Set<Element>()
     const shouldSkip = (element: Element) => motionPreference.matches ||
       Boolean(element.closest('main > section')?.matches(':target, :focus-within, :has(:target)'))
 
     const observer = new IntersectionObserver(entries => {
       for (const { target, isIntersecting } of entries) {
-        active.get(target)?.cancel()
-        active.delete(target)
-        if (!isIntersecting || shouldSkip(target)) continue
+        if (!isIntersecting || revealed.has(target) || active.has(target) || shouldSkip(target)) continue
 
-        // Moving an observed video heading can move it back across the observer boundary.
-        const videoHeading = target.classList.contains('brutal-section-heading')
-        const keyframes = videoHeading
-          ? [{ opacity: .65 }, { opacity: 1 }]
-          : [{ opacity: .12, transform: 'translateY(3rem)' }, { opacity: 1, transform: 'none' }]
-        const animation = target.animate(keyframes, {
-          duration: videoHeading ? 300 : 580,
-          easing: 'cubic-bezier(.18, .72, .25, 1)',
+        revealed.add(target)
+        const animation = target.animate([{ opacity: .65 }, { opacity: 1 }], {
+          duration: 360,
+          easing: 'ease-out',
         })
         active.set(target, animation)
         animation.onfinish = () => {
           if (active.get(target) === animation) active.delete(target)
         }
       }
-    }, { rootMargin: '0px 0px -48px 0px' })
+    }, { rootMargin: '24px 0px' })
+
+    // Require the element to move well away before another reveal can play.
+    const resetObserver = new IntersectionObserver(entries => {
+      for (const { target, isIntersecting } of entries) {
+        if (!isIntersecting) revealed.delete(target)
+      }
+    }, { rootMargin: '120px 0px' })
 
     function cancelSkippedAnimations() {
       for (const [target, animation] of active) {
@@ -63,13 +65,17 @@ export function App() {
       }
     }
 
-    targets.forEach(target => observer.observe(target))
+    targets.forEach(target => {
+      observer.observe(target)
+      resetObserver.observe(target)
+    })
     main.addEventListener('focusin', cancelSkippedAnimations)
     window.addEventListener('hashchange', cancelSkippedAnimations)
     motionPreference.addEventListener('change', cancelSkippedAnimations)
 
     return () => {
       observer.disconnect()
+      resetObserver.disconnect()
       active.forEach(animation => animation.cancel())
       main.removeEventListener('focusin', cancelSkippedAnimations)
       window.removeEventListener('hashchange', cancelSkippedAnimations)
