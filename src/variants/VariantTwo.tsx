@@ -1,7 +1,182 @@
+import { useEffect, useRef, useState } from 'react'
 import { CoachPhoto } from '../components/CoachPhoto'
 import { articles, videos, heroDescription, coachIntro, trainingApproach, trainingLevels } from '../content'
 import { socials, youtubeVideoUrl } from '../socials'
 import { VideoCard } from '../VideoCard'
+
+const blogArticles = [
+  ...articles,
+  {
+    category: 'Х-гард',
+    title: 'Свип из Х-гарда в ги',
+    preview: 'Посмотрите, как меняется опора у партнёра перед свипом. Отметьте момент, когда он уже не может просто вернуть вес на обе ноги.',
+    video: videos.xGuard,
+  },
+  {
+    category: 'No Gi',
+    title: 'Де ла Рива без ги',
+    preview: 'Во второй части разбора обратите внимание, как борец сохраняет контакт с ногой партнёра без захвата за ткань.',
+    video: videos.deLaRiva,
+  },
+  {
+    category: 'Проход гарда',
+    title: 'Тореандо с вышагиванием',
+    preview: 'Проследите за шагом проходящего: в какой момент он уходит в сторону и что мешает партнёру снова поставить ноги между вами.',
+    video: videos.toreando,
+  },
+]
+
+const blogScrollSpeed = 42
+const blogScrollAcceleration = 110
+
+function BlogRail() {
+  const railRef = useRef<HTMLDivElement>(null)
+  const copyRef = useRef<HTMLDivElement>(null)
+  const [paused, setPaused] = useState(false)
+
+  useEffect(() => {
+    const rail = railRef.current
+    const copy = copyRef.current
+    if (!rail || !copy || typeof IntersectionObserver === 'undefined') return
+
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const hover = window.matchMedia('(any-hover: hover)')
+    let visible = false
+    let hovered = hover.matches && rail.matches(':hover')
+    let pointerDown = false
+    let frame = 0
+    let lastTime = 0
+    let speed = 0
+    let remainder = 0
+
+    function schedule() {
+      if (!frame && visible && !paused && !motion.matches) frame = requestAnimationFrame(tick)
+    }
+
+    function tick(time: number) {
+      frame = 0
+      if (!rail || !copy) return
+
+      const elapsed = lastTime ? Math.min((time - lastTime) / 1000, .05) : 0
+      lastTime = time
+      const resting = hovered || pointerDown || rail.matches(':focus-within')
+      const speedChange = elapsed * blogScrollAcceleration
+      speed = resting ? Math.max(0, speed - speedChange) : Math.min(blogScrollSpeed, speed + speedChange)
+
+      remainder += speed * elapsed
+      const step = Math.floor(remainder)
+      if (step) {
+        const loopWidth = copy.offsetLeft
+        if (loopWidth > 0) rail.scrollLeft = (Math.max(0, rail.scrollLeft) + step) % loopWidth
+        remainder -= step
+      }
+
+      if (speed || !resting) schedule()
+      else lastTime = 0
+    }
+
+    function stop() {
+      cancelAnimationFrame(frame)
+      frame = 0
+      lastTime = 0
+      speed = 0
+      remainder = 0
+    }
+
+    function enter(event: PointerEvent) {
+      if (event.pointerType === 'touch') return
+      hovered = true
+      schedule()
+    }
+
+    function leave() {
+      hovered = false
+      schedule()
+    }
+
+    function press() {
+      pointerDown = true
+      stop()
+    }
+
+    function release() {
+      if (!pointerDown) return
+      pointerDown = false
+      schedule()
+    }
+
+    function syncMotion() {
+      if (!rail) return
+      rail.toggleAttribute('data-loop', !motion.matches)
+      if (motion.matches) stop()
+      else schedule()
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting
+      if (visible) schedule()
+      else stop()
+    })
+
+    observer.observe(rail)
+    syncMotion()
+    motion.addEventListener('change', syncMotion)
+    rail.addEventListener('pointerenter', enter)
+    rail.addEventListener('pointerleave', leave)
+    rail.addEventListener('pointerdown', press)
+    rail.addEventListener('focusin', stop)
+    rail.addEventListener('focusout', schedule)
+    window.addEventListener('pointerup', release)
+    window.addEventListener('pointercancel', release)
+
+    return () => {
+      stop()
+      observer.disconnect()
+      motion.removeEventListener('change', syncMotion)
+      rail.removeEventListener('pointerenter', enter)
+      rail.removeEventListener('pointerleave', leave)
+      rail.removeEventListener('pointerdown', press)
+      rail.removeEventListener('focusin', stop)
+      rail.removeEventListener('focusout', schedule)
+      window.removeEventListener('pointerup', release)
+      window.removeEventListener('pointercancel', release)
+    }
+  }, [paused])
+
+  function renderArticles(copy = false) {
+    return blogArticles.map(article => (
+      <article key={article.title}>
+        <p className="section-index">{article.category}</p>
+        <h3>
+          <a href={youtubeVideoUrl(article.video.id)} tabIndex={copy ? -1 : undefined}>
+            {article.title} <span aria-hidden="true">↗</span>
+          </a>
+        </h3>
+        <p>{article.preview}</p>
+      </article>
+    ))
+  }
+
+  return (
+    <div className="wrap brutal-blog-grid">
+      <div className="brutal-blog-heading">
+        <div>
+          <p className="section-index">03 / Блог</p>
+          <h2 id="blog-title">Заметки с ковра</h2>
+        </div>
+        <button className="brutal-blog-toggle" type="button" onClick={() => setPaused(value => !value)}>
+          {paused ? 'Возобновить прокрутку' : 'Приостановить прокрутку'}
+        </button>
+      </div>
+      <div className="brutal-blog-rail" ref={railRef}>
+        <div className="brutal-articles">{renderArticles()}</div>
+        <div className="brutal-articles brutal-articles-copy" ref={copyRef} aria-hidden="true" onMouseDown={event => event.preventDefault()}>
+          {renderArticles(true)}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export function VariantTwo() {
   return (
@@ -63,21 +238,7 @@ export function VariantTwo() {
       </section>
 
       <section id="blog" className="brutal-blog" aria-labelledby="blog-title">
-        <div className="wrap brutal-blog-grid">
-          <div>
-            <p className="section-index">03 / Блог</p>
-            <h2 id="blog-title">Заметки<br />с ковра</h2>
-          </div>
-          <div className="brutal-articles">
-            {articles.map(article => (
-              <article key={article.title}>
-                <p className="section-index">{article.category}</p>
-                <h3><a href={youtubeVideoUrl(article.video.id)}>{article.title} <span aria-hidden="true">↗</span></a></h3>
-                <p>{article.preview}</p>
-              </article>
-            ))}
-          </div>
-        </div>
+        <BlogRail />
       </section>
     </>
   )
