@@ -308,19 +308,6 @@
   justify-content: space-between;
   gap: 1rem 2rem;
 }
-:where(.variant-two) .brutal-blog-toggle {
-  min-height: 44px;
-  padding: .45rem .8rem;
-  border: 1px solid #79756e;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-}
-:where(.variant-two) .brutal-blog-toggle:hover {
-  background: var(--charcoal);
-  color: var(--paper);
-}
 :where(.variant-two) .brutal-blog-rail {
   position: relative;
   display: flex;
@@ -352,9 +339,6 @@
 
 @media (max-width: 32rem) {
   :where(.variant-two) .brutal-blog-rail { --blog-card: min(19rem, 76vw); }
-}
-@media (prefers-reduced-motion: reduce) {
-  :where(.variant-two) .brutal-blog-toggle { display: none; }
 }
 :where(.variant-two) .brutal-articles .section-index { margin-bottom: .5rem; }
 :where(.variant-two) .brutal-articles h3 {
