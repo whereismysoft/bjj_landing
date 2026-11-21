@@ -32,7 +32,6 @@ const blogScrollAcceleration = 110
 function BlogRail() {
   const railRef = useRef<HTMLDivElement>(null)
   const copyRef = useRef<HTMLDivElement>(null)
-  const [paused, setPaused] = useState(false)
 
   useEffect(() => {
     const rail = railRef.current
@@ -54,7 +53,7 @@ function BlogRail() {
     let remainder = 0
 
     function schedule() {
-      if (!frame && visible && !paused && !motion.matches && !manualScroll) frame = requestAnimationFrame(tick)
+      if (!frame && visible && !motion.matches && !manualScroll) frame = requestAnimationFrame(tick)
     }
 
     function tick(time: number) {
@@ -175,7 +174,7 @@ function BlogRail() {
       window.removeEventListener('pointerup', release)
       window.removeEventListener('pointercancel', release)
     }
-  }, [paused])
+  }, [])
 
   function renderArticles(copy = false) {
     return blogArticles.map(article => (
@@ -198,9 +197,6 @@ function BlogRail() {
           <p className="section-index">03 / Блог</p>
           <h2 id="blog-title">Заметки с ковра</h2>
         </div>
-        <button className="brutal-blog-toggle" type="button" onClick={() => setPaused(value => !value)}>
-          {paused ? 'Возобновить прокрутку' : 'Приостановить прокрутку'}
-        </button>
       </div>
       <div className="brutal-blog-rail" ref={railRef}>
         <div className="brutal-articles">{renderArticles()}</div>
