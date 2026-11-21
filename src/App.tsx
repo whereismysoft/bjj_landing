@@ -25,8 +25,6 @@ export function App() {
       '.brutal-detail',
       '.brutal-about-copy',
       '.brutal-section-heading',
-      '.brutal-video-feature',
-      '.brutal-video-list',
       '.brutal-blog-grid > :first-child',
       '.brutal-blog-rail',
       '#contact .section-grid > *',
@@ -41,10 +39,15 @@ export function App() {
         active.delete(target)
         if (!isIntersecting || shouldSkip(target)) continue
 
-        const animation = target.animate([
-          { opacity: .12, transform: 'translateY(3rem)' },
-          { opacity: 1, transform: 'none' },
-        ], { duration: 580, easing: 'cubic-bezier(.18, .72, .25, 1)' })
+        // Moving an observed video heading can move it back across the observer boundary.
+        const videoHeading = target.classList.contains('brutal-section-heading')
+        const keyframes = videoHeading
+          ? [{ opacity: .65 }, { opacity: 1 }]
+          : [{ opacity: .12, transform: 'translateY(3rem)' }, { opacity: 1, transform: 'none' }]
+        const animation = target.animate(keyframes, {
+          duration: videoHeading ? 300 : 580,
+          easing: 'cubic-bezier(.18, .72, .25, 1)',
+        })
         active.set(target, animation)
         animation.onfinish = () => {
           if (active.get(target) === animation) active.delete(target)
