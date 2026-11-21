@@ -1,29 +1,13 @@
 import { ContactForm } from './ContactForm'
-import { socials } from './socials'
-import { VideoCard, type Video } from './VideoCard'
+import { VideoCard } from './VideoCard'
+import { articles, videos } from './content'
+import { socials, youtubeVideoUrl } from './socials'
 
 const navigation = [
   ['about', 'О тренере'],
   ['videos', 'Видео'],
   ['blog', 'Блог'],
   ['contact', 'Контакты'],
-]
-
-const videos: Video[] = []
-
-const articles = [
-  {
-    category: 'Первые шаги',
-    title: 'Что взять на первую тренировку',
-    preview: 'Простая экипировка и несколько вещей, о которых легко забыть.',
-    body: 'Возьмите воду, тапочки и сменную одежду. Заранее уточните, нужна ли форма для ги или подойдёт спортивная одежда без молний и карманов. Снимите украшения, подстригите ногти и приезжайте чуть раньше, чтобы успеть переодеться.',
-  },
-  {
-    category: 'Тренировочный процесс',
-    title: 'Как работать в спарринге',
-    preview: 'Одна задача на раунд помогает замечать ошибки и отслеживать прогресс.',
-    body: 'Выберите позицию, в которой хотите разобраться, и обсудите задачу с партнёром. Начинайте в темпе, в котором можете следить за техникой. Если приём уже зафиксирован или вам некомфортно, постучите и остановитесь. После раунда разберите один момент, который хотите попробовать снова.',
-  },
 ]
 
 function Brand() {
@@ -78,11 +62,13 @@ export function App() {
         </section>
 
         <section id="videos" className="section section-dark">
-          <div className="wrap section-grid">
-            <h2>Видео</h2>
-            <div>
-              <p className="muted section-intro">Подборка видео появится здесь. Пока можно перейти на канал Паши.</p>
-              {videos.length ? <div className="video-grid">{videos.map(video => <VideoCard key={video.id} video={video} />)}</div> : <VideoCard />}
+          <div className="wrap">
+            <div className="section-heading">
+              <h2>Видео</h2>
+              <a className="text-link" href={socials.youtube}>Все видео на YouTube ↗</a>
+            </div>
+            <div className="video-grid">
+              {Object.values(videos).map(video => <VideoCard key={video.id} video={video} />)}
             </div>
           </div>
         </section>
@@ -96,10 +82,7 @@ export function App() {
                   <p className="eyebrow">{article.category}</p>
                   <h3>{article.title}</h3>
                   <p className="muted">{article.preview}</p>
-                  <details>
-                    <summary>Читать</summary>
-                    <p>{article.body}</p>
-                  </details>
+                  <a className="text-link" href={youtubeVideoUrl(article.video.id)}>Смотреть выпуск ↗</a>
                 </article>
               ))}
             </div>
