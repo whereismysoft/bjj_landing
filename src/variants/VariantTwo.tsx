@@ -188,29 +188,44 @@ function VideoList() {
     if (activeVideo.current === id) return
 
     activeVideo.current = id
-    // Expanding one row moves its neighbors. Ignore visibility changes caused by that transition.
+    // Expanding one row moves its neighbors. Ignore scroll anchoring changes caused by that transition.
     selectionLockedUntil.current = performance.now() + 450
     setSelectedId(id)
   }
 
   useEffect(() => {
     const list = listRef.current
-    if (!list || typeof IntersectionObserver === 'undefined') return
+    if (!list) return
 
     const autoSelect = window.matchMedia('(max-width: 47.99rem) and (pointer: coarse) and (prefers-reduced-motion: no-preference)')
-    const visibilityThreshold = .2
-    const observer = new IntersectionObserver(entries => {
+    const rows = Array.from(list.querySelectorAll<HTMLLIElement>('[data-video-id]'))
+    let frame = 0
+
+    function updateSelection() {
+      frame = 0
       if (!autoSelect.matches || performance.now() < selectionLockedUntil.current) return
 
-      const visible = entries.filter(entry => entry.isIntersecting && entry.intersectionRatio >= visibilityThreshold)
-      const candidate = visible[0]?.target.getAttribute('data-video-id')
-      if (candidate && !visible.some(entry => entry.target.getAttribute('data-video-id') === activeVideo.current)) {
-        selectVideo(candidate)
-      }
-    }, { threshold: visibilityThreshold })
+      const viewport = window.visualViewport
+      const trigger = (viewport?.offsetTop ?? 0) + (viewport?.height ?? window.innerHeight) * .45
+      let candidate = videos.kneeShield.id
 
-    list.querySelectorAll('[data-video-id]').forEach(row => observer.observe(row))
-    return () => observer.disconnect()
+      for (const row of rows) {
+        if (row.getBoundingClientRect().top > trigger) break
+        if (row.dataset.videoId) candidate = row.dataset.videoId
+      }
+
+      selectVideo(candidate)
+    }
+
+    function scheduleSelection() {
+      if (autoSelect.matches && !frame) frame = window.requestAnimationFrame(updateSelection)
+    }
+
+    window.addEventListener('scroll', scheduleSelection, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', scheduleSelection)
+      window.cancelAnimationFrame(frame)
+    }
   }, [])
 
   return (
