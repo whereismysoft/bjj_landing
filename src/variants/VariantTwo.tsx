@@ -181,61 +181,36 @@ function BlogRail() {
 function VideoList() {
   const [selectedId, setSelectedId] = useState<string>(videos.kneeShield.id)
   const listRef = useRef<HTMLOListElement>(null)
+  const selectionLockedUntil = useRef(0)
+  const activeVideo = useRef<string>(videos.kneeShield.id)
+
+  function selectVideo(id: string) {
+    if (activeVideo.current === id) return
+
+    activeVideo.current = id
+    // Expanding one row moves its neighbors. Ignore visibility changes caused by that transition.
+    selectionLockedUntil.current = performance.now() + 450
+    setSelectedId(id)
+  }
 
   useEffect(() => {
     const list = listRef.current
-    if (!list) return
+    if (!list || typeof IntersectionObserver === 'undefined') return
 
     const autoSelect = window.matchMedia('(max-width: 47.99rem) and (pointer: coarse) and (prefers-reduced-motion: no-preference)')
-    let timer: number | undefined
-    let gestureStart: number | undefined
-    let touching = false
+    const visibilityThreshold = .2
+    const observer = new IntersectionObserver(entries => {
+      if (!autoSelect.matches || performance.now() < selectionLockedUntil.current) return
 
-    function selectVisibleVideo() {
-      if (touching || gestureStart === undefined) return
+      const visible = entries.filter(entry => entry.isIntersecting && entry.intersectionRatio >= visibilityThreshold)
+      const candidate = visible[0]?.target.getAttribute('data-video-id')
+      if (candidate && !visible.some(entry => entry.target.getAttribute('data-video-id') === activeVideo.current)) {
+        selectVideo(candidate)
+      }
+    }, { threshold: visibilityThreshold })
 
-      const distance = Math.abs(window.scrollY - gestureStart)
-      gestureStart = undefined
-      if (distance < 16 || !autoSelect.matches) return
-
-      const viewport = window.visualViewport
-      const readingLine = (viewport?.offsetTop ?? 0) + (viewport?.height ?? window.innerHeight) * .55
-      const rows = list?.querySelectorAll<HTMLLIElement>('[data-video-id]')
-      const current = rows && Array.from(rows).find(row => {
-        const bounds = row.getBoundingClientRect()
-        return bounds.top <= readingLine && bounds.bottom > readingLine
-      })
-      if (current?.dataset.videoId) setSelectedId(current.dataset.videoId)
-    }
-
-    function beginGesture() {
-      window.clearTimeout(timer)
-      touching = true
-      gestureStart = autoSelect.matches ? window.scrollY : undefined
-    }
-
-    function scheduleSelection() {
-      window.clearTimeout(timer)
-      if (!touching && gestureStart !== undefined) timer = window.setTimeout(selectVisibleVideo, 150)
-    }
-
-    function endGesture() {
-      touching = false
-      scheduleSelection()
-    }
-
-    window.addEventListener('touchstart', beginGesture, { passive: true })
-    window.addEventListener('touchend', endGesture, { passive: true })
-    window.addEventListener('touchcancel', endGesture, { passive: true })
-    window.addEventListener('scroll', scheduleSelection, { passive: true })
-
-    return () => {
-      window.clearTimeout(timer)
-      window.removeEventListener('touchstart', beginGesture)
-      window.removeEventListener('touchend', endGesture)
-      window.removeEventListener('touchcancel', endGesture)
-      window.removeEventListener('scroll', scheduleSelection)
-    }
+    list.querySelectorAll('[data-video-id]').forEach(row => observer.observe(row))
+    return () => observer.disconnect()
   }, [])
 
   return (
@@ -251,7 +226,7 @@ function VideoList() {
               type="button"
               aria-expanded={selected}
               aria-controls={panelId}
-              onClick={() => setSelectedId(video.id)}
+              onClick={() => selectVideo(video.id)}
             >
               <span className="brutal-video-preview" aria-hidden="true"><VideoThumbnail id={video.id} /></span>
               <span className="brutal-video-title">{video.title}</span>
