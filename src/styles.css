@@ -60,3 +60,69 @@ img { display: block; max-width: 100%; }
 }
 .training-schedule dt { font-weight: 700; font-variant-numeric: tabular-nums; }
 .training-schedule dd { margin: 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* An anchored entry should animate the destination, not the offscreen hero. */
+  :where(.variant-one, .variant-two):not(:has(main:target, main > section:target)) {
+    .hero-content > *,
+    .brutal-hero-copy > :not(h1) {
+      animation: entrance-rise 480ms cubic-bezier(.2, .75, .25, 1) backwards;
+    }
+
+    .hero-content h1 { animation-delay: 55ms; }
+    .hero-description { animation-delay: 135ms; }
+    .hero-content > .button { animation-delay: 190ms; }
+
+    .hero-photo {
+      animation: entrance-portrait 640ms cubic-bezier(.22, .8, .25, 1) backwards;
+    }
+
+    .brutal-portrait {
+      animation: entrance-portrait 460ms cubic-bezier(.2, .85, .25, 1) backwards;
+    }
+
+    .brutal-hero h1 > span {
+      animation: entrance-line 380ms cubic-bezier(.2, .85, .25, 1) backwards;
+    }
+
+    .brutal-hero h1 > :nth-child(1) { animation-delay: 60ms; }
+    .brutal-hero h1 > :nth-child(2) { animation-delay: 115ms; }
+    .brutal-hero h1 > :nth-child(3) { animation-delay: 170ms; }
+    .brutal-hero h1 > :nth-child(4) { animation-delay: 225ms; }
+    .brutal-hero-copy > .brutal-hero-intro { animation-delay: 260ms; }
+    .brutal-hero-copy > .button { animation-delay: 310ms; }
+
+    .hero-content:focus-within > *,
+    .brutal-hero-copy:focus-within > :not(h1),
+    .brutal-hero-copy:focus-within h1 > span { animation: none; }
+  }
+
+  #videos:target:not(:focus-within) {
+    .section-heading,
+    .brutal-section-heading {
+      animation: entrance-rise 380ms cubic-bezier(.2, .75, .25, 1) backwards;
+    }
+
+    .video-grid,
+    .brutal-video-feature,
+    .brutal-video-list {
+      animation: entrance-rise 450ms cubic-bezier(.2, .75, .25, 1) 75ms backwards;
+    }
+
+    .brutal-video-list { animation-delay: 135ms; }
+  }
+
+  @keyframes entrance-rise {
+    from { opacity: 0; transform: translateY(.8rem); }
+  }
+
+  @keyframes entrance-portrait {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0); }
+  }
+
+  @keyframes entrance-line {
+    from { opacity: 0; transform: translateY(25%); clip-path: inset(0 0 100% 0); }
+    to { opacity: 1; transform: none; clip-path: inset(-10% -5%); }
+  }
+}
