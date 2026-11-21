@@ -236,7 +236,7 @@ function VideoList() {
       if (!autoSelect.matches || performance.now() < selectionLockedUntil.current) return
 
       const viewport = window.visualViewport
-      const trigger = (viewport?.offsetTop ?? 0) + (viewport?.height ?? window.innerHeight) * .45
+      const trigger = (viewport?.offsetTop ?? 0) + (viewport?.height ?? window.innerHeight) * .65
       let candidate = videos.kneeShield.id
 
       for (const row of rows) {
