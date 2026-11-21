@@ -180,15 +180,72 @@ function BlogRail() {
 
 function VideoList() {
   const [selectedId, setSelectedId] = useState<string>(videos.kneeShield.id)
+  const listRef = useRef<HTMLOListElement>(null)
+
+  useEffect(() => {
+    const list = listRef.current
+    if (!list) return
+
+    const autoSelect = window.matchMedia('(max-width: 47.99rem) and (pointer: coarse) and (prefers-reduced-motion: no-preference)')
+    let timer: number | undefined
+    let gestureStart: number | undefined
+    let touching = false
+
+    function selectVisibleVideo() {
+      if (touching || gestureStart === undefined) return
+
+      const distance = Math.abs(window.scrollY - gestureStart)
+      gestureStart = undefined
+      if (distance < 16 || !autoSelect.matches) return
+
+      const viewport = window.visualViewport
+      const readingLine = (viewport?.offsetTop ?? 0) + (viewport?.height ?? window.innerHeight) * .55
+      const rows = list?.querySelectorAll<HTMLLIElement>('[data-video-id]')
+      const current = rows && Array.from(rows).find(row => {
+        const bounds = row.getBoundingClientRect()
+        return bounds.top <= readingLine && bounds.bottom > readingLine
+      })
+      if (current?.dataset.videoId) setSelectedId(current.dataset.videoId)
+    }
+
+    function beginGesture() {
+      window.clearTimeout(timer)
+      touching = true
+      gestureStart = autoSelect.matches ? window.scrollY : undefined
+    }
+
+    function scheduleSelection() {
+      window.clearTimeout(timer)
+      if (!touching && gestureStart !== undefined) timer = window.setTimeout(selectVisibleVideo, 150)
+    }
+
+    function endGesture() {
+      touching = false
+      scheduleSelection()
+    }
+
+    window.addEventListener('touchstart', beginGesture, { passive: true })
+    window.addEventListener('touchend', endGesture, { passive: true })
+    window.addEventListener('touchcancel', endGesture, { passive: true })
+    window.addEventListener('scroll', scheduleSelection, { passive: true })
+
+    return () => {
+      window.clearTimeout(timer)
+      window.removeEventListener('touchstart', beginGesture)
+      window.removeEventListener('touchend', endGesture)
+      window.removeEventListener('touchcancel', endGesture)
+      window.removeEventListener('scroll', scheduleSelection)
+    }
+  }, [])
 
   return (
-    <ol className="brutal-video-list">
+    <ol className="brutal-video-list" ref={listRef}>
       {Object.values(videos).map(video => {
         const selected = selectedId === video.id
         const panelId = `video-panel-${video.id}`
 
         return (
-          <li className="brutal-video-item" key={video.id} data-selected={selected}>
+          <li className="brutal-video-item" key={video.id} data-video-id={video.id} data-selected={selected}>
             <button
               className="brutal-video-selector"
               type="button"
